@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragging Papers - Birthday Wishes</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('images/bg.jpeg.jpeg');
+            background-size: 799px;
+            background-position: center center;
+            margin: 0;
+        }
+
+        .paper {
+            position: absolute;
+            background-image: url('images/paper.webp.png');
+            background-size: 50px;
+            background-position: center center;
+            padding: 20px 100px;
+            transform: rotateZ(-5deg);
+            box-shadow: 1px 15px 20px 0px rgba(0, 0, 0, 0.5);
+        }
+
+        .paper.heart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        .paperimage {
+            padding: 10px;
+        }
+
+        .paper.image {
+            font-size: 30px;
+        }
+
+        img {
+            max-height: 200px;
+            width: 100%;
+            user-select: none;
+        }
+
+        .paper.heart::after {
+            content: "";
+            background-image: url('images/heart.webp.png');
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: 150px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            opacity: 0.75;
+        }
+
+        p {
+            font-family: 'Zeyada', cursive;
+            font-size: 30px;
+            color: rgb(100, 0, 0); /* Natural red */
+            opacity: 0.9;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="paper heart"></div>
+    <div class="paper image">
+        <p>Today is your special day,</p>
+        <p>Happy Birthday to you!</p>
+        <img src="images/1.jpeg.jpg">
+    </div>
+
+    <div class="paper image">
+        <p>Wishing you all the happiness</p>
+        <p>and love on your birthday.</p>
+        <img src="images/2.jpeg.jpg">
+    </div>
+
+    <div class="paper image">
+        <p>Hope your day is filled with</p>
+        <p>joy and wonderful moments!</p>
+        <img src="images/3.jpeg.jpg">
+    </div>
+
+    <div class="paper">
+        <p>You deserve all the best today,</p>
+        <p>and always.</p>
+    </div>
+
+    <div class="paper">
+        <p>Happy Birthday!</p>
+        <p>Let's celebrate YOU!</p>
+    </div>
+
+    <div class="paper">
+        <p>Drag the paper to move</p>
+    </div>
+
+    <script>
+        let highestZ = 1;
+
+        class Paper {
+
+            init(paper) {
+                this.holdingPaper = false;
+                this.prevMouseX = 0;
+                this.prevMouseY = 0;
+                this.mouseX = 0;
+                this.mouseY = 0;
+                this.velocityX = 0;
+                this.velocityY = 0;
+                this.currentPaperX = 0;
+                this.currentPaperY = 0;
+
+                paper.addEventListener('mousedown', (e) => {
+                    this.holdingPaper = true;
+                    paper.style.zIndex = highestZ;
+                    highestZ += 1;
+
+                    if (e.button === 0) {
+                        this.prevMouseX = e.clientX;
+                        this.prevMouseY = e.clientY;
+                    }
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY;
+                    this.velocityX = this.mouseX - this.prevMouseX;
+                    this.velocityY = this.mouseY - this.prevMouseY;
+
+                    if (this.holdingPaper) {
+                        this.currentPaperX += this.velocityX;
+                        this.currentPaperY += this.velocityY;
+                        this.prevMouseX = this.mouseX;
+                        this.prevMouseY = this.mouseY;
+                        paper.style.transform = `translate(${this.currentPaperX}px, ${this.currentPaperY}px)`;
+                    }
+                });
+
+                window.addEventListener('mouseup', () => {
+                    this.holdingPaper = false;
+                });
+            }
+        }
+
+        const papers = Array.from(document.querySelectorAll('.paper'));
+
+        papers.forEach(paper => {
+            const p = new Paper();
+            p.init(paper);
+        });
+    </script>
+</body>
+</html>
